@@ -12,14 +12,15 @@ const schema = yup
     email: yup.string().email("E-mail inválido").required("Campo obrigatório"),
     password: yup
       .string()
+      .required("Campo obrigatório")
       .min(6, "No minimo 6 caracteres")
-      .required("Campo obrigatório"),
-  })
-  .required();
+  }).required();
+
 
 const Login = () => {
   const {
     control,
+    handleSubmit,
     formState: { errors, isValid },
   } = useForm<IFormLogin>({
     resolver: yupResolver(schema),
@@ -28,28 +29,36 @@ const Login = () => {
     reValidateMode: "onChange",
   });
 
+
+  const onSubmit = (data: IFormLogin) => {
+    console.log("Dados enviados:", data);
+  };
+
   return (
     <Container>
       <LoginContainer>
         <Column>
           <Title>Login</Title>
-          <Spacing />
-          <Input
-            name="email"
-            placeholder="Email"
-            control={control}
-            errorMessage={errors?.email?.message}
-          />
-          <Spacing />
-          <Input
-            name="password"
-            type="password"
-            placeholder="Senha"
-            control={control}
-            errorMessage={errors?.password?.message}
-          />
-          <Spacing />
-          <Button title="Entrar" />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Spacing />
+            <Input
+              name="email"
+              placeholder="Email"
+              control={control}
+              errorMessage={errors?.email?.message}
+            />
+            <Spacing />
+            <Input
+              name="password"
+              type="password"
+              placeholder="Senha"
+              control={control}
+              errorMessage={errors?.password?.message}
+            />
+            <Spacing />
+            <Button title="Entrar" disabled={!isValid}/>
+          </form>
+          
         </Column>
       </LoginContainer>
     </Container>
